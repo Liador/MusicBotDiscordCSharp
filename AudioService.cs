@@ -160,7 +160,7 @@ namespace MusicBot
                 IAudioClient client = IsConnected(guild);
                 if (client != null)
                 {
-                    Console.WriteLine("If in SendAudioAsync");
+                    //Console.WriteLine("If in SendAudioAsync");
                     //await Log(LogSeverity.Debug, $"Starting playback of {path} in {guild.Name}");
                     var output = CreateStreamYTDirect(song).StandardOutput.BaseStream;
                     //var output = await YoutubeExplode.Services.Extensions.GetStreamAsync(, song);
