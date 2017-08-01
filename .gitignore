@@ -1,0 +1,7 @@
+./bin
+./Connected Services
+./obj
+./Properties
+App.config
+Class1.cs
+!./Modules
