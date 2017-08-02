@@ -17,7 +17,7 @@ namespace MusicBot
     {
         private readonly ConcurrentDictionary<ulong, IAudioClient> ConnectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
         private AudioOutStream stream;
-        private List<string> playlist;
+        private Playlist playlist;
         private ulong BotLogChannelID;
         private SocketGuild sGuild;
         private YoutubeClient ytClient;
@@ -124,6 +124,7 @@ namespace MusicBot
                 stream = client.CreatePCMStream(AudioApplication.Music);
                 await output.CopyToAsync(stream);
                 await stream.FlushAsync().ConfigureAwait(false);
+                
             }
             else
             {
@@ -139,16 +140,7 @@ namespace MusicBot
         {
             string videoID = ParseYoutubeID(song);
             ytClient = new YoutubeClient();
-
-
-            //Console.Write("Playing music");
-            // Your task: Get a full path to the file if the value of 'path' is only a filename.
-            /**if (!File.Exists(song))
-            {
-                //await guild.TextChannels.SendMessageAsync("File does not exist.");
-                Console.Write("File does not exist.");
-                return;
-            }*/
+            //Music mu = new Music(song);
             bool exists = await ytClient.CheckVideoExistsAsync(videoID);
             if (!exists)
             {
@@ -160,7 +152,6 @@ namespace MusicBot
                 IAudioClient client = IsConnected(guild);
                 if (client != null)
                 {
-                    //Console.WriteLine("If in SendAudioAsync");
                     //await Log(LogSeverity.Debug, $"Starting playback of {path} in {guild.Name}");
                     var output = CreateStreamYTDirect(song).StandardOutput.BaseStream;
                     //var output = await YoutubeExplode.Services.Extensions.GetStreamAsync(, song);
@@ -168,6 +159,7 @@ namespace MusicBot
                     // You can change the bitrate of the outgoing stream with an additional argument to CreatePCMStream().
                     // If not specified, the default bitrate is 96*1024.
                     stream = client.CreatePCMStream(AudioApplication.Music);
+                    //playlist.addStream(mu, stream);
                     await output.CopyToAsync(stream);
                     await stream.FlushAsync().ConfigureAwait(true);
                 }
@@ -291,10 +283,10 @@ namespace MusicBot
                 return null;
             }
         }
-        public void AddToPlaylist(string song)
+        /**public void AddToPlaylist(string song)
         {
-            playlist.Add(song);
+            playlist.addSong(song);
             Console.WriteLine(playlist.Count.ToString() + " songs in the list\n");
-        }
+        }*/
     }
 }

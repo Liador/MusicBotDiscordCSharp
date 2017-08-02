@@ -41,7 +41,7 @@ namespace MusicBot
         {
             _client = new DiscordSocketClient();
             handler = new CommandHandler(_client);
-
+            
             _client.Log += Log;
 
 
@@ -64,6 +64,8 @@ namespace MusicBot
             }
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
+
+            
 
             //_client.MessageReceived += MessageReceived;
 

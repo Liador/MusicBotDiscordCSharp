@@ -15,6 +15,13 @@ namespace MusicBot.Modules
             await Context.Channel.SendMessageAsync("Helping");
         }
 
+        [Command("servid", RunMode = RunMode.Async)]
+        public async Task servid()
+        {
+            await Context.Channel.SendMessageAsync("Server ID: " + 94773780315910144.ToString());
+            await Context.Channel.SendMessageAsync(Context.Guild.Id.ToString());
+        }
+
         /**[Command("play", RunMode = RunMode.Async)]
         public async Task play(string url)
         {
