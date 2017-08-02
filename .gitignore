@@ -5,3 +5,12 @@
 App.config
 Class1.cs
 !./Modules
+./bin/Debug
+./obj/Debug
+MusicBot.csproj
+MusicBot.csproj.user
+ffmpeg.exe
+ffplay.exe
+ffprobe.exe
+package.config
+youtube-dl.exe
