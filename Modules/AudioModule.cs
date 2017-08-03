@@ -1,52 +1,37 @@
 ﻿using Discord;
 using Discord.Commands;
-using System;
-using System.Threading.Tasks;
 using Discord.WebSocket;
+using System.Threading.Tasks;
 
 namespace MusicBot.Modules
 {
     public class AudioModule : ModuleBase<SocketCommandContext>
     {
-        // Scroll down further for the AudioService.
-        // Like, way down.
-        // Hit 'End' on your keyboard if you still can't find it.
         private readonly AudioService _service;
 
         public AudioModule(AudioService service)
         {
-            //Console.Write("Heyo");
             _service = service;
         }
 
-        // You MUST mark these commands with 'RunMode.Async'
-        // otherwise the bot will not respond until the Task times out.
         [Command("join", RunMode = RunMode.Async)]
         public async Task JoinCmd()
         {
-            ulong channelID = 317035706319110155;
-            //Console.Write("join\n");
+            //ulong channelID = 317035706319110155;
             await _service.JoinAudio(Context.Guild, (Context.User as IVoiceState).VoiceChannel);
-            Console.Write("I'm connected\n");
-            //await _service.JoinAudio(Context.Guild, Context.Guild.GetVoiceChannel(channelID));
         }
 
-        // Remember to add preconditions to your commands,
-        // this is merely the minimal amount necessary.
-        // Adding more commands of your own is also encouraged.
         [Command("leave", RunMode = RunMode.Async)]
         public async Task LeaveCmd()
         {
-            //Console.Write("leave\n");
             await _service.LeaveAudio(Context.Guild);
         }
-
-        [Command("play", RunMode = RunMode.Async)]
+        /** plays from local files
+         * */
+        [Command("playy", RunMode = RunMode.Async)]
         public async Task PlayCmd([Remainder] string song)
         {
-            //Console.Write("play\n");
             ulong channelID = 317035706319110155;
-            //if (Context.Client.ConnectionState == ConnectionState.Connected)
             if (_service.IsConnected(Context.Guild) != null)
             {
 
@@ -59,13 +44,12 @@ namespace MusicBot.Modules
             await _service.SendAudioAsync(Context.Guild, Context.Guild.GetChannel(channelID), song);
 
         }
-
-        [Command("playy", RunMode = RunMode.Async)]
+        /**plays from youtube url
+         * */
+        [Command("play", RunMode = RunMode.Async)]
         public async Task PlayyCmd([Remainder] string song)
         {
-            //Console.Write("play\n");
-            ulong channelID = 317035706319110155;
-            //if (Context.Client.ConnectionState == ConnectionState.Connected)
+            //ulong channelID = 317035706319110155;
             if (_service.IsConnected(Context.Guild) != null)
             {
                 
@@ -79,9 +63,6 @@ namespace MusicBot.Modules
             {
                 await _service.StartPlaying(Context.Guild, (Context.User as IVoiceState).VoiceChannel as SocketChannel);
             }
-            //await Context.Channel.SendMessageAsync(song);
-            //await _service.SendAudioAsyncYTdirect(Context.Guild, Context.Guild.GetChannel(channelID), song);
-
         }
 
         [Command("stop", RunMode = RunMode.Async)]
@@ -96,6 +77,8 @@ namespace MusicBot.Modules
             await Context.Channel.SendMessageAsync("Is it working?\n");
         }
 
+        /** Test to get the idd from a wyoutube link
+         * */
         [Command("vidID", RunMode = RunMode.Async)]
         public async Task vidID(string ytUrl)
         {
