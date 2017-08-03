@@ -2,6 +2,7 @@
 using Discord.Commands;
 using System;
 using System.Threading.Tasks;
+using Discord.WebSocket;
 
 namespace MusicBot.Modules
 {
@@ -67,14 +68,19 @@ namespace MusicBot.Modules
             //if (Context.Client.ConnectionState == ConnectionState.Connected)
             if (_service.IsConnected(Context.Guild) != null)
             {
-
+                
             }
             else
             {
                 await _service.JoinAudio(Context.Guild, (Context.User as IVoiceState).VoiceChannel);
             }
-            await Context.Channel.SendMessageAsync(song);
-            await _service.SendAudioAsyncYTdirect(Context.Guild, Context.Guild.GetChannel(channelID), song);
+            _service.AddToPlaylist(song);
+            if(!_service.IsPlaying())
+            {
+                await _service.StartPlaying(Context.Guild, (Context.User as IVoiceState).VoiceChannel as SocketChannel);
+            }
+            //await Context.Channel.SendMessageAsync(song);
+            //await _service.SendAudioAsyncYTdirect(Context.Guild, Context.Guild.GetChannel(channelID), song);
 
         }
 

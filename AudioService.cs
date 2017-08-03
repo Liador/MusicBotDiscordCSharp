@@ -17,15 +17,21 @@ namespace MusicBot
     {
         private readonly ConcurrentDictionary<ulong, IAudioClient> ConnectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
         private AudioOutStream stream;
-        private Playlist playlist;
+        //private Playlist playlist;
+        private ConcurrentQueue<Music> playlist;
         private ulong BotLogChannelID;
         private SocketGuild sGuild;
         private YoutubeClient ytClient;
-        private YoutubeExplode.Models.VideoInfo videoInfos;
+        //private YoutubeExplode.Models.VideoInfo videoInfos;
+        //private int MusicListCount;
+        private bool isPlaying;
 
         public AudioService()
         {
-            
+            playlist = new ConcurrentQueue<Music>();
+            BotLogChannelID = 340938722830712842;
+            //MusicListCount = 0;
+            isPlaying = false;
         }
         private Task Log(LogMessage msg)
         {
@@ -158,10 +164,11 @@ namespace MusicBot
 
                     // You can change the bitrate of the outgoing stream with an additional argument to CreatePCMStream().
                     // If not specified, the default bitrate is 96*1024.
-                    stream = client.CreatePCMStream(AudioApplication.Music);
+                    stream = client.CreatePCMStream(AudioApplication.Music, 96*1024,2000,30);
                     //playlist.addStream(mu, stream);
                     await output.CopyToAsync(stream);
                     await stream.FlushAsync().ConfigureAwait(true);
+                    //await NextSongAsync(guild,socketChannel);
                 }
                 else
                 {
@@ -236,6 +243,13 @@ namespace MusicBot
             //throw new NotImplementedException();
         }
 
+        internal async Task NextSongAsync(SocketGuild guild, SocketChannel socketChannel)
+        {
+            Music song = new Music("");
+            playlist.TryDequeue(out song);
+            await SendAudioAsyncYTdirect(guild, socketChannel, song.getPathFile());
+        }
+
         private Process CreateStreamYTDirect(string path)
         {
             Process currentsong = new Process();
@@ -283,10 +297,29 @@ namespace MusicBot
                 return null;
             }
         }
-        /**public void AddToPlaylist(string song)
+        public void AddToPlaylist(string song)
         {
-            playlist.addSong(song);
-            Console.WriteLine(playlist.Count.ToString() + " songs in the list\n");
-        }*/
+            playlist.Enqueue(new Music(song));
+            Console.WriteLine(playlist.Count.ToString() + " songs in the list");
+        }
+
+        public bool IsPlaying()
+        {
+            return isPlaying;
+        }
+        public async Task StartPlaying(SocketGuild guild, SocketChannel socketChannel)
+        {
+            isPlaying = true;
+            bool hasNext = true;
+            Music mu = new Music("");
+            hasNext=  playlist.TryDequeue(out mu);
+            while(hasNext)
+            {
+                await SendAudioAsyncYTdirect(guild, socketChannel, mu.getPathFile());
+                hasNext = playlist.TryDequeue(out mu);
+            }
+            
+            isPlaying = false;
+        }
     }
 }

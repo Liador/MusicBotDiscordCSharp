@@ -53,6 +53,7 @@ namespace MusicBot
                 {
                     //await s.Channel.SendMessageAsync(_service.Modules.Count().ToString());
                     var context = new SocketCommandContext(_client, msg);
+                    
 
                     int argPos = 0;
                     if (msg.HasStringPrefix("$", ref argPos))

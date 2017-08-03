@@ -20,6 +20,7 @@ namespace MusicBot.Modules
         {
             await Context.Channel.SendMessageAsync("Server ID: " + 94773780315910144.ToString());
             await Context.Channel.SendMessageAsync(Context.Guild.Id.ToString());
+            
         }
 
         /**[Command("play", RunMode = RunMode.Async)]
